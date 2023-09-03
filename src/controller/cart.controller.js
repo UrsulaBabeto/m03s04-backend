@@ -1,13 +1,15 @@
-const { sign } = require("jsonwebtoken");
 const { Cart } = require("../model/Cart");
-const { Product } = require('../model/Product')
+const { Product } = require("../model/Product");
+const { User } = require("../model/User");
 class CartController {
   async create(req, res) {
     try {
       const { userId } = req.body;
 
-      const user = await Cart.findByPk(userId)
-      if(!user) return res.status(404).send({ message: "Usuario não já existe" });
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).send({ message: "Usuario não encontrado" });
+      }
 
       const existCart = await Cart.findOne({
         where: { userId: userId, status: true },
@@ -49,11 +51,9 @@ class CartController {
     try {
       const { cartId } = req.params;
       const cart = await Cart.findByPk(cartId);
-
       if (!cart) {
         return res.status(404).send({ message: "Carrinho não encontrado" });
       }
-
       return res.status(200).send({ cart });
     } catch (error) {
       return res.status(400).send({
@@ -67,11 +67,9 @@ class CartController {
     try {
       const { cartId } = req.params;
       const cart = await Cart.findByPk(cartId);
-
       if (!cart) {
         return res.status(404).send({ message: "Carrinho não encontrado" });
       }
-
       await cart.destroy();
 
       return res
@@ -129,22 +127,24 @@ class CartController {
 
   async buyProduct(req, res) {
     try {
-        const { cartId, productsId } = req.body
-        const cart = await Cart.findOne({ where: {cartId:cartId} })
-        const product = await Product.findAll({ where: {productId: productsId} })
+      const { cartId, productsId } = req.body;
+      const cart = await Cart.findOne({ where: { cartId: cartId } });
+      const product = await Product.findAll({
+        where: { productId: productsId },
+      });
 
-        await cart.addProduct(product);
+      await cart.addProduct(product);
 
-        return res.status(201).send({
-            message: "Produto atribuido ao carrinho com sucesso"
-        })
+      return res.status(201).send({
+        message: "Produto atribuido ao carrinho com sucesso",
+      });
     } catch (error) {
-        return res.status(400).send({
-            message: "Erro ao comprar o produto para esse usuário",
-            cause: error.message
-        })
+      return res.status(400).send({
+        message: "Erro ao comprar o produto para esse usuário",
+        cause: error.message,
+      });
     }
-}
+  }
 }
 
 module.exports = new CartController();

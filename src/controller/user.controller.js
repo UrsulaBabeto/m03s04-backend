@@ -1,8 +1,7 @@
 const { sign } = require("jsonwebtoken");
 const { User } = require("../model/User");
 const { Cart } = require("../model/Cart");
-const { nameValidation } = require("../services/user.sevice");
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
 class UserController {
   async create(req, res) {
@@ -40,10 +39,14 @@ class UserController {
   async findOne(req, res) {
     try {
       const { userId } = req.params;
-      nameValidation()
-
-      return res.status(200).send("Usuário: ${user.email}");
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).send({message: "O usuário informado não existe!" });
+      }
+      console.log(res);
+      return res.status(200).send(`Usuário: ${user.email}`);
     } catch (error) {
+  
       return res.status(400).send({
         message: "Erro ao listar o usuário",
         cause: error.message,
@@ -80,7 +83,7 @@ class UserController {
         cause: error.message,
       });
     }
-  }
+  } 
 
   async findCarts(req, res) {
     try {
@@ -110,7 +113,11 @@ class UserController {
       const { userId } = req.params;
       const { name } = req.body;
 
-      nameValidation()
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).send({ message: "O usuário informado não existe!" });
+      }
 
       if (!name) {
         return res.status(400).send({ message: "DIgite um campo valido" });
@@ -132,12 +139,17 @@ class UserController {
       });
     }
   }
-  async updatePassword(req, res) {
+    async updatePassword(req, res) {
     try {
         const { userId } = req.params
         const { password } = req.body
 
-        await nameValidation()
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res
+          .status(404)
+          .send({ message: "O usuário informado não existe!" });
+      }
 
         const match = bcrypt.compareSync(password, user.password)
         if(match) {
@@ -154,7 +166,7 @@ class UserController {
         })
     }
 
-}
+} 
 }
 
 module.exports = new UserController();

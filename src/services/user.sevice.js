@@ -1,20 +1,29 @@
 const { User } = require("../model/User");
 
 class UserService {
-  async nameValidation() {
-    try {
-      const { userId } = req.params;
-      const user = await User.findByPk(userId);
+  async update(userId, { name, email, password }) {
+    const dataForUpdate = Object.assign(
+      {},
+      email && { email },
+      name && { name },
+      password && { password }
+    );
 
-      if (!user) {
-        return res.status(404).send({ message: "Usuário não encontrado." });
-      }
-    } catch (error) {
-      return res.status(400).send({
-        message: "Erro",
-        cause: error.message,
-      });
+    await User.update(dataForUpdate, {
+      where: { userId },
+      individualHooks: true,
+    });
+  }
+
+  async verifyUser(user) {
+    if (!user) {
+      return res
+        .status(404)
+        .send({ message: "O usuário informado não existe!" });
+    } else {
+      return true;
     }
   }
 }
-module.exports = { UserService }
+
+module.exports = new UserService();

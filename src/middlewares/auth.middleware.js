@@ -1,4 +1,4 @@
-const { config } = require('dotenv')
+ const { config } = require('dotenv')
 const { verify } = require('jsonwebtoken')
 config()
 
@@ -16,4 +16,4 @@ async function auth(req, res, next) {
 
 }
 
-module.exports = { auth }
+module.exports = { auth } 
