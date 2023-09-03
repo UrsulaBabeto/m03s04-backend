@@ -55,7 +55,7 @@ class ProductController {
             const product = await Product.findByPk(productId)
 
             if(!product){
-                return res.status(404).send({message:`Produto não encontrado`})
+                return res.status(404).send({message:"Produto não encontrado"})
             }
 
             return res.status(200).send({product})
@@ -73,7 +73,7 @@ class ProductController {
             const product = await Product.findByPk(productId)
 
             if(!product){
-                return res.status(404).send({message:`Produto não encontrado`})
+                return res.status(404).send({message:"Produto não encontrado"})
             }
 
             await product.destroy()
@@ -93,7 +93,7 @@ class ProductController {
             const product = await Product.findOne({where: {productId:productId}, paranoid:false})
 
             if(!product){
-                return res.status(404).send({message:`Produto não encontrado`})
+                return res.status(404).send({message:"Produto não encontrado"})
             }
 
             await product.restore()
@@ -112,7 +112,7 @@ class ProductController {
             const product = await Product.findAll({paranoid:false})
 
             if(!product){
-                return res.status(404).send({message:`Produto não encontrado`})
+                return res.status(404).send({message:"Produto não encontrado"})
             }
 
             return res.status(200).send({product})

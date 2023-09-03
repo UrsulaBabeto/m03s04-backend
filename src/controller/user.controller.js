@@ -42,7 +42,7 @@ class UserController {
       const { userId } = req.params;
       nameValidation()
 
-      return res.status(200).send(`Usuário: ${user.email}`);
+      return res.status(200).send("Usuário: ${user.email}");
     } catch (error) {
       return res.status(400).send({
         message: "Erro ao listar o usuário",
@@ -93,7 +93,7 @@ class UserController {
       });
 
       if (!user) {
-        return res.status(404).send({ message: `Usuário não encontrado` });
+        return res.status(404).send({ message: "Usuário não encontrado" });
       }
 
       return res.status(200).send({ user });
